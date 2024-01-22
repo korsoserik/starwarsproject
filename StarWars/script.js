@@ -1,58 +1,71 @@
-// API URL-ek
-const apiBaseUrl = "https://bgs.jedlik.eu/swapi/api";
-const starshipsUrl = `${apiBaseUrl}/starships/`;
-const speciesUrl = `${apiBaseUrl}/species/`;
+const baseUrl = "https://bgs.jedlik.eu/swapi/api/";
 
-// Aszinkron függvény az űrhajók lekérésére
-async function fetchStarships() {
-  try {
-    const response = await fetch(starshipsUrl);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    displayStarships(data.results);
-  } catch (error) {
-    console.error("Hiba az űrhajók lekérésénél:", error);
-  }
+function fetchData(endpoint, callback) {
+  fetch(`${baseUrl}${endpoint}`)
+    .then((response) => response.json())
+    .then((data) => callback(data))
+    .catch((error) => console.error("Error:", error));
 }
 
-// Aszinkron függvény a lények lekérésére
-async function fetchSpecies() {
-  try {
-    const response = await fetch(speciesUrl);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    displaySpecies(data.results);
-  } catch (error) {
-    console.error("Hiba a lények lekérésénél:", error);
-  }
-}
-
-// Űrhajók megjelenítése
-function displayStarships(starships) {
-  const starshipsDiv = document.getElementById("starships");
-  starships.forEach((starship) => {
-    const starshipDiv = document.createElement("div");
-    starshipDiv.classList.add("starship", "col-md-4");
-    starshipDiv.innerHTML = `<h3>${starship.name}</h3>`;
-    starshipsDiv.appendChild(starshipDiv);
+function displayMovieData() {
+  fetchData("films/2", (data) => {
+    document.getElementById("movieData").innerHTML = `
+            <h2>${data.title}</h2>
+            <p>${data.opening_crawl}</p>
+        `;
   });
 }
 
-// Lények megjelenítése
-function displaySpecies(species) {
-  const speciesDiv = document.getElementById("species");
-  species.forEach((specie) => {
-    const speciesDiv = document.createElement("div");
-    speciesDiv.classList.add("species", "col-md-4");
-    speciesDiv.innerHTML = `<h3>${specie.name}</h3>`;
-    speciesDiv.appendChild(speciesDiv);
+function displayItems(endpoint, containerId) {
+  fetchData(endpoint, (data) => {
+    const itemsContainer = document.getElementById(containerId);
+    itemsContainer.innerHTML = "";
+    data.results.forEach((item) => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = item.name || item.title;
+      div.onclick = () =>
+        alert(`This item appears in: ${item.films.join(", ")}`);
+      itemsContainer.appendChild(div);
+    });
   });
 }
 
-// Funkciók meghívása az oldal betöltésekor
-fetchStarships();
-fetchSpecies();
+document.addEventListener("DOMContentLoaded", function () {
+  displayMovieData();
+  displayItems("starships", "spaceships");
+  displayItems("species", "creatures");
+});
+
+// ...existing functions...
+
+function displayItems(endpoint, containerId, type) {
+  fetchData(endpoint, (data) => {
+    const itemsContainer = document.getElementById(containerId);
+    itemsContainer.innerHTML = "";
+    data.results.forEach((item, index) => {
+      const colDiv = document.createElement("div");
+      colDiv.className = "col-sm-6 col-md-4 col-lg-3 mb-4";
+      const itemDiv = document.createElement("div");
+      itemDiv.className =
+        "item h-100 d-flex flex-column justify-content-center align-items-center";
+      const imageUrl = `https://bgs.jedlik.eu/swimages/${type}/${
+        index + 1
+      }.jpg`;
+      itemDiv.innerHTML = `
+              <div class="image-container" style="background-image: url('${imageUrl}');"></div>
+              <span>${item.name || item.title}</span>
+          `;
+      itemDiv.onclick = () =>
+        alert(`This item appears in: ${item.films.join(", ")}`);
+      colDiv.appendChild(itemDiv);
+      itemsContainer.appendChild(colDiv);
+    });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  displayMovieData();
+  displayItems("starships", "spaceships", "starships");
+  displayItems("species", "creatures", "species");
+});

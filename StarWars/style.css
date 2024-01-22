@@ -1,16 +1,37 @@
-/* Basic styling */
 body {
-  font-family: "Arial", sans-serif;
-  background-image:url(image/background.jpg);
-  color: #ffffff;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
 }
 
-#starships-section,
-#species-section {
-  margin-bottom: 30px;
+#content {
+  text-align: center;
 }
 
-.starship,
-.species {
-  margin-bottom: 15px;
+.item:hover {
+  background-color: #e0e0e0;
+}
+
+.item {
+  width: 150px;
+  cursor: pointer;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+}
+
+.image-container {
+  width: 100px;
+  height: 100px;
+  margin: auto;
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
 }
