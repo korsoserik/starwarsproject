@@ -176,6 +176,7 @@ async function displayMovies(films) {
       <head>
         <title>Movies</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="style.css">
       </head>
       <body class="p-4">
         <div class="row">
